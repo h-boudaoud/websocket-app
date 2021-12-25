@@ -1,0 +1,21 @@
+{
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "description": "A simple Chat application",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Housni BOUDAOUD",
+      "email": "h.boudaoud@hotmail.fr"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "MyApp\\": "src"
+    }
+  },
+  "require": {
+    "cboden/ratchet": "^0.4",
+    "twig/twig": "^3.0"
+  }
+}

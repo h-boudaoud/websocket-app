@@ -3,3 +3,7 @@
 /vendor/*
 /tmp/*
 /.idea/*
+
+
+# gitignore files
+composer.lock
