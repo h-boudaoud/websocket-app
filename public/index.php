@@ -18,14 +18,21 @@
     <script>
         let name = '';
         let msg = {
-            from:'',
-            content :'hello word'
+            from: '',
+            content: 'hello word'
         }
-        const ws = new WebSocket('ws://127.0.0.1:3001');
-        function newUsername() {
 
+        let messagesDiv = null;
+        let msgContentInput = null;
+        // let btnReset = null;
+        // let btnSubmit = null;
+        let msgForm = null;
+        let userInfoDiv=null;
+        const ws = new WebSocket('ws://127.0.0.1:3001');
+
+        function newUsername() {
             return new Promise(resolve => {
-                let username=''
+                let username = ''
                 let promptMessage = "Please enter your name";
                 while (!username.trim()) {
                     username = prompt(promptMessage, "");
@@ -37,10 +44,18 @@
 
 
         $(window).on('load', () => {
+            messagesDiv = $('#messages');
+            msgContentInput = $("#msgContentInput");
+            // btnSubmit = $("#btnSubmit");
+            // btnReset = $("#btnReset");
+            msgForm = $("#msgForm");
+            userInfoDiv = $('#userInfo') ;
+            const heightDiv = $(window).height() - (msgForm.height() + userInfoDiv.height() + 40);
 
-            ws.onopen = async ()=> {
+            messagesDiv.height(heightDiv);
+            ws.onopen = async () => {
                 name = await newUsername();
-                $('#userInfo').html('Welcome '+name)
+                userInfoDiv.html('Welcome ' + name)
                 msg.from = name
                 console.log("Connection established!", msg);
                 ws.send(JSON.stringify(msg));
@@ -51,54 +66,68 @@
             ws.onmessage = function (e) {
                 const data = JSON.parse(e.data);
                 console.log('new message', data);
-                $("#messages").append(
-                    "<li>"+
+                messagesDiv.append(
+                    "<li>" +
                     (data.from && data.from.trim()
-                            ? "<button>"+data.from+"</button> : "
-                            :""
+                            ? "<button>" + data.from + "</button> : "
+                            : ""
                     )
                     + data.content + "</li>")
             }
             ws.onclose = function () {
                 alert("Connection closed...");
             };
-            const content = $("#msgContent");
             // const btnSubmit = $("#btnSubmit");
-            const msgForm = $("#msgForm");
             msgForm.submit(function (event) {
                 event.preventDefault();
-                msg.content = content.val();
-                if (content.val().trim()) {
-                    console.log('send message : ', content.val())
+                msg.content = msgContentInput.val();
+                if (msgContentInput.val().trim()) {
+                    console.log('send message : ', msgContentInput.val())
                     ws.send(JSON.stringify(msg));
-                    $("#messages").append("<li>" + content.val() + "</li>")
-                    content.val("")
+                    messagesDiv.prepend("<li>" + msgContentInput.val() + "</li>")
+                    msgContentInput.val("")
                 }
             });
         });
     </script>
 </head>
 <body>
-<section class="container">
+<section class="container-fluid">
     <h2 id="userInfo">Welcome</h2>
-    <ul id="messages" class="bg-dark text-white list-group m-1 p-2" style="height: 70vh"></ul>
-    <form id="msgForm" class="d-flex m-1">
-        <div id="sendTo">
-            <label></label>
-            <input type="hidden" />
+    <div class="row h-100">
+        <div class="col-3 m-0">
+            <ul id="users" class="bg-dark bg-gradient text-white list-group overflow-auto  h-100 m-0 p-2"></ul>
         </div>
-        <div class="form-group mb-3  w-100">
-            <input
-                    type="text"
-                    class="form-control"
-                    id="msgContent"
-                    name="username"
-                    value=""
-                    placeholder="tape your username her"
-            />
+        <div class="col-9 m-0">
+            <ul id="messages" class="bg-dark bg-gradient text-white list-group overflow-auto m-0 p-2"></ul>
         </div>
-        <div>
-            <button class="btn btn-primary"  type="submit" id="btnSubmit">Submit</button>
+    </div>
+
+    <form id="msgForm" class="row m-0  fixed-bottom">
+        <div id="channel" class="col-3 m-0">
+            <input type="hidden"/>
+            <label class="btn w-100 bg-info bg-gradient"><strong>All</strong> users</label>
+        </div>
+        <div class="col-9 d-flex m-0">
+            <div class="form-group mb-3 w-100">
+                <input
+                        type="text"
+                        class="form-control"
+                        id="msgContentInput"
+                        name="username"
+                        value=""
+                        placeholder="tape your message her"
+                />
+            </div>
+            <div id="sendTo" class="w-25">
+                <input type="hidden"/>
+                <button class="btn bg-info bg-gradient w-100" type="submit" id="btnSubmit">
+                    Send to <strong>All</strong>
+                </button>
+            </div>
+            <div>
+                <button class="btn bg-warning bg-gradient" type="reset" id="btnReset">Reset</button>
+            </div>
         </div>
     </form>
 </section>
