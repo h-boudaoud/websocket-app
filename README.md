@@ -20,15 +20,20 @@ are required to install this application
 The web server must be configured to set up a redirection to `path/to/project_floder/public/index.php`
 
 ###Problem to be solved: 
-The first message sent from a Firefox browser is not received
+No solved :
+
+Solved:
+  - The first message sent from a Firefox browser is not received
 
 ## Commands to install the application
 
+Install components
 ```
 composer install
+```
+Run websocket server
+```
 php bin/console
-
-
 ```
 ### Bibliographic references :
 http://socketo.me/docs/hello-world

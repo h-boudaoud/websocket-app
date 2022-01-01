@@ -22,16 +22,26 @@
             content :'hello word'
         }
         const ws = new WebSocket('ws://127.0.0.1:3001');
+        function newUsername() {
+
+            return new Promise(resolve => {
+                let username=''
+                let promptMessage = "Please enter your name";
+                while (!username.trim()) {
+                    username = prompt(promptMessage, "");
+                    promptMessage = "Name is not valid \nPlease enter a new valide name";
+                }
+                resolve(username);
+            });
+        }
+
 
         $(window).on('load', () => {
-            let promptMessage ="Please enter your name";
-            while (!name.trim()) {
-                name = prompt(promptMessage, "");
-                promptMessage = "Name is not valid \nPlease enter a new valide name";
-            }
-            $('#userInfo').html('Welcome '+name)
-            msg.from = name
-            ws.onopen = ()=> {
+
+            ws.onopen = async ()=> {
+                name = await newUsername();
+                $('#userInfo').html('Welcome '+name)
+                msg.from = name
                 console.log("Connection established!", msg);
                 ws.send(JSON.stringify(msg));
             };
