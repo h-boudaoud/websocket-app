@@ -20,7 +20,7 @@ are required to install this application
 The web server must be configured to set up a redirection to `path/to/project_floder/public/index.php`
 
 ###Problem to be solved: 
-the first message sent from a mozilla browser is not received
+The first message sent from a Firefox browser is not received
 
 ## Commands to install the application
 
